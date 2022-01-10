@@ -4,9 +4,7 @@ import bodyParser from "body-parser";
 import lusca from "lusca";
 
 // Controllers (route handlers)
-import mediaController from "./controllers/media";
-import webhookController from "./controllers/webhook";
-import assetController from "./controllers/asset";
+import homeController from "./controllers/home";
 
 // Create Express server
 const app = express();
@@ -23,8 +21,6 @@ app.disable("x-powered-by");
 /**
  * Primary app routes.
  */
-app.get("/media/:mediaId", mediaController);
-app.post("/webhook", webhookController);
-app.get("/assets/:id", assetController);
+app.get("/:id", homeController);
 
 export default app;
