@@ -1,6 +1,6 @@
 FROM node:lts
 
-WORKDIR /var/www/whatsapp-bot
+WORKDIR /var/www/asset
 
 COPY . .
 
