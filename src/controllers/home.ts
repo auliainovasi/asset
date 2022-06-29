@@ -18,7 +18,7 @@ export async function post(req: Request, res: Response) {
         return res.status(400).json({
             status: 400,
             error: 400,
-            message: "No files were uploaded"
+            messages: "No files were uploaded"
         });
     }
 
