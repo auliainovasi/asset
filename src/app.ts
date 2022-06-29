@@ -2,9 +2,10 @@ import express from "express";
 import compression from "compression";  // compresses requests
 import bodyParser from "body-parser";
 import lusca from "lusca";
+import multer from "multer";
 
 // Controllers (route handlers)
-import homeController from "./controllers/home";
+import * as homeController from "./controllers/home";
 
 // Create Express server
 const app = express();
@@ -21,6 +22,7 @@ app.disable("x-powered-by");
 /**
  * Primary app routes.
  */
-app.get("/:id", homeController);
+app.get("/:id", homeController.get);
+app.post("/", multer({ dest: "writable/uploads/" }).single("file"), homeController.post);
 
 export default app;

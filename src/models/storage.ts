@@ -13,6 +13,10 @@ export async function uploadFile(file: PathOrFileDescriptor, contentType: string
     });
 }
 
+export function getAsset(filename: string) {
+    return path.resolve(`writable/uploads/${filename}`);
+}
+
 export async function getFile(key: string) {
     return await aws.getObject(
         {

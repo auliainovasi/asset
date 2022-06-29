@@ -4,7 +4,8 @@ WORKDIR /var/www/asset
 
 COPY . .
 
-RUN npm install && \
+RUN chmod 777 writable/* && \
+    npm install && \
     npm run build
 
 CMD ["npm", "start"]
