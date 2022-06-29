@@ -15,7 +15,11 @@ export function get(req: Request, res: Response) {
 
 export async function post(req: Request, res: Response) {
     if (!req.file) {
-        return res.status(400).send("No files were uploaded");
+        return res.status(400).json({
+            status: 400,
+            error: 400,
+            message: "No files were uploaded"
+        });
     }
 
     const file = req.file;
