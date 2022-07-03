@@ -5,7 +5,7 @@ WORKDIR /var/www/asset
 COPY . .
 
 RUN chmod 777 writable/* && \
-    npm install && \
-    npm run build
+    yarn install && \
+    yarn run build
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
