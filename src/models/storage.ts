@@ -1,20 +1,18 @@
-import { PathOrFileDescriptor, readFile } from "fs";
-import path from "path";
+import { PathOrFileDescriptor, readFileSync } from "fs";
+import { basename, resolve } from "path";
 import aws from "../config/aws";
 
 export async function uploadFile(file: PathOrFileDescriptor, contentType: string) {
-    readFile(file, {}, async (error, data) => {
-        await aws.putObject({
-            Bucket: "kartini",
-            Key: path.basename(file as string),
-            Body: data,
-            ContentType: contentType
-        }).promise();
-    });
+    return await aws.putObject({
+        Bucket: "kartini",
+        Key: basename(file as string),
+        Body: readFileSync(file),
+        ContentType: contentType
+    }).promise();
 }
 
 export function getAsset(filename: string) {
-    return path.resolve(`writable/uploads/${filename}`);
+    return resolve(`src/public/${filename}`);
 }
 
 export async function getFile(key: string) {
