@@ -29,7 +29,7 @@ export async function post(req: Request, res: Response) {
         throw new Error(error);
     });
     return res.json({
-        status: 200,
+        status: 201,
         data: {
             id: filename
         }
