@@ -4,7 +4,7 @@ WORKDIR /var/www/asset
 
 COPY . .
 
-RUN chmod 777 src/* && \
+RUN chmod 777 src/public/* && \
     yarn install && \
     yarn run build
 

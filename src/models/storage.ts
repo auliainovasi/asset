@@ -11,7 +11,7 @@ export async function uploadFile(file: PathOrFileDescriptor, contentType: string
     }).promise();
 }
 
-export function getAsset(filename: string) {
+export function getAsset(filename = "") {
     return resolve(`src/public/${filename}`);
 }
 
