@@ -28,7 +28,7 @@ export async function post(req: Request, res: Response) {
     await uploadFile(getAsset(filename), file.mimetype).catch((error) => {
         throw new Error(error);
     });
-    return res.json({
+    return res.status(201).json({
         status: 201,
         data: {
             id: filename
