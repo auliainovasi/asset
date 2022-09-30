@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@master
       - name: Install dependencies
-        run: yarn install
+        run: yarn
       - name: Build
         run: yarn run build
       - name: Deploy
