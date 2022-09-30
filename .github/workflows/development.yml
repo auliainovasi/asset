@@ -1,0 +1,29 @@
+name: development
+
+on:
+  push:
+    branches: [ development ]
+  pull_request:
+    branches: [ development ]
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup node
+        uses: actions/setup-node@master
+      - name: Install dependencies
+        run: yarn install
+      - name: build
+        run: yarn run build
+      - name: SSH Command
+        uses: D3rHase/ssh-command-action@main
+        with:
+          HOST: ${{secrets.HOST_DEVELOPMENT}}
+          PORT: ${{secrets.PORT_DEVELOPMENT}}
+          USER: ${{secrets.USER}}
+          PRIVATE_SSH_KEY: ${{secrets.PRIVATE_SSH_KEY_DEVELOPMENT}}
+          COMMAND: ${{secrets.COMMAND_DEVELOPMENT}}

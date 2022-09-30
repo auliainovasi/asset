@@ -1,0 +1,29 @@
+name: master
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup node
+        uses: actions/setup-node@master
+      - name: Install dependencies
+        run: yarn install
+      - name: build
+        run: yarn run build
+      - name: SSH Command
+        uses: D3rHase/ssh-command-action@main
+        with:
+          HOST: ${{secrets.HOST_PRODUCTION}}
+          PORT: ${{secrets.PORT_PRODUCTION}}
+          USER: ${{secrets.USER}}
+          PRIVATE_SSH_KEY: ${{secrets.PRIVATE_SSH_KEY_PRODUCTION}}
+          COMMAND: ${{secrets.COMMAND_PRODUCTION}}
