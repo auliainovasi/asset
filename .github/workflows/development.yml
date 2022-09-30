@@ -8,18 +8,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-      - name: setup node
+      - name: Set up Node
         uses: actions/setup-node@master
       - name: Install dependencies
         run: yarn install
-      - name: build
+      - name: Build
         run: yarn run build
-      - name: SSH Command
+      - name: Deploy
         uses: D3rHase/ssh-command-action@main
         with:
           HOST: ${{secrets.HOST_DEVELOPMENT}}
