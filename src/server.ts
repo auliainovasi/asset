@@ -1,5 +1,5 @@
-import Sentry from "@sentry/node";
-import Tracing from "@sentry/tracing";
+import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
 import errorHandler from "errorhandler";
 import app from "./app";
 import "dotenv/config";
