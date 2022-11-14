@@ -15,8 +15,9 @@ export function get(req: Request, res: Response) {
 
 export async function post(req: Request, res: Response) {
     let status = 400;
+    const file = req.file;
 
-    if (!req.file) {
+    if (!file) {
         return res.status(status).json({
             status: status,
             error: status,
@@ -24,7 +25,6 @@ export async function post(req: Request, res: Response) {
         });
     }
 
-    const file = req.file;
     const filename = file.filename;
     status = 201;
 
