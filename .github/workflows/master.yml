@@ -20,10 +20,10 @@ jobs:
       - name: Build
         run: yarn run build
       - name: Deploy
-        uses: D3rHase/ssh-command-action@main
+        uses: appleboy/ssh-action@master
         with:
-          HOST: ${{secrets.HOST_PRODUCTION}}
-          PORT: ${{secrets.PORT_PRODUCTION}}
-          USER: ${{secrets.USER}}
-          PRIVATE_SSH_KEY: ${{secrets.PRIVATE_SSH_KEY_PRODUCTION}}
-          COMMAND: ${{secrets.COMMAND_PRODUCTION}}
+          host: ${{secrets.HOST_PRODUCTION}}
+          port: ${{secrets.PORT_PRODUCTION}}
+          username: ${{secrets.USERNAME}}
+          password: ${{secrets.PASSWORD}}
+          script: ${{secrets.SCRIPT_PRODUCTION}}
