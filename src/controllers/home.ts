@@ -3,7 +3,7 @@ import { getAsset, getFile, uploadFile } from "../models/storage";
 
 /**
  * Home API example.
- * @route GET /
+ * @route POST /
  */
 export async function index(req: Request, res: Response) {
     let status = 400;
