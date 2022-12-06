@@ -31,9 +31,9 @@ export async function index(req: Request, res: Response) {
 
 /**
  * Id API example.
- * @route GET /:d
+ * @route GET /:id
  */
-export function id(req: Request, res: Response) {
+export function getId(req: Request, res: Response) {
     getFile(req.params.id).then(img => {
         const buf = Buffer.from(img.Body as Buffer);
 

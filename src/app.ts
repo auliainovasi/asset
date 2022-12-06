@@ -27,7 +27,7 @@ app.disable("x-powered-by");
 /**
  * API examples routes.
  */
-app.get("/:id", homeController.id);
+app.get("/:id", homeController.getId);
 app.post("/", multer({dest: storage.getAsset()}).single("file"), homeController.index);
 
 export default app;
