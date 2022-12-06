@@ -7,7 +7,7 @@ import cors from "cors";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
-import { getAsset } from "./models/storage";
+import * as storage from "./models/storage";
 
 // Create Express server
 const app = express();
@@ -25,9 +25,9 @@ app.use(cors({
 app.disable("x-powered-by");
 
 /**
- * Primary app routes.
+ * API examples routes.
  */
-app.get("/:id", homeController.get);
-app.post("/", multer({dest: getAsset()}).single("file"), homeController.post);
+app.get("/:id", homeController.id);
+app.post("/", multer({dest: storage.getAsset()}).single("file"), homeController.index);
 
 export default app;
