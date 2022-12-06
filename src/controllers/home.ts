@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getAsset, getFile, uploadFile } from "../models/storage";
 
 /**
- * Index API example.
+ * Home API example.
  * @route GET /
  */
 export async function index(req: Request, res: Response) {
