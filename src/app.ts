@@ -7,6 +7,7 @@ import cors from "cors";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
+import * as injectController from "./controllers/inject";
 import * as storage from "./models/storage";
 
 // Create Express server
@@ -29,5 +30,6 @@ app.disable("x-powered-by");
  */
 app.get("/:id", homeController.getId);
 app.post("/", multer({dest: storage.getAsset()}).single("file"), homeController.index);
+app.post("/inject", multer({dest: storage.getAsset()}).single("file"), injectController.index);
 
 export default app;
