@@ -25,7 +25,7 @@ export async function index(req: Request, res: Response) {
     createReadStream(getAsset(file.filename))
         .pipe(parse({ delimiter: ",", from_line: 2 }))
         .on("data", (row) => {
-            if (row && !data.length) {
+            if (row) {
                 data.push(row[0].split(";"));
             }
         }).on("end", () => {
