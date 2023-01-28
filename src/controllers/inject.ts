@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { createReadStream } from "fs";
 import { parse } from "csv-parse";
 import { getAsset } from "../models/storage";
-import { insertPetition, insertPetitionCount } from "../models/data";
+import { hitWeb, insertPetition, insertPetitionCount } from "../models/data";
 
 /**
  * Inject API example.
@@ -33,10 +33,15 @@ export async function index(req: Request, res: Response) {
 
             for (const iterator of data) {
                 setTimeout(async () => {
-                    await insertPetition(iterator[0], iterator[1], iterator[2]).then(value => {
-                        console.log(value);
+                    await hitWeb(iterator[3], iterator[4]).then(value => {
+                        console.log(value.data);
                     });
-                    await insertPetitionCount(); 
+                    await insertPetition(iterator[0], iterator[1], iterator[2]).then(value => {
+                        console.log(value.data);
+                    });
+                    await insertPetitionCount().then(value => {
+                        console.log(value.data);
+                    });
                 }, Math.floor(Math.random() * 1000));
             }
 
