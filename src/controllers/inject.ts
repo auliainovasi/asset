@@ -23,28 +23,29 @@ export async function index(req: Request, res: Response) {
     }
 
     createReadStream(getAsset(file.filename))
-        .pipe(parse({ delimiter: ",", from_line: 2 }))
+        .pipe(parse({ columns: true }))
         .on("data", (row) => {
             if (row) {
-                data.push(row[0].split(";"));
+                data.push(row);
             }
         }).on("end", () => {
             console.log(data);
 
             for (const iterator of data) {
                 setTimeout(async () => {
-                    await hitWeb(iterator[3], iterator[4]).then(value => {
+                    await hitWeb(iterator.region, iterator.area);
+                    await insertPetition(iterator.name, iterator.mobile, iterator.area).then(value => {
+                        console.log(iterator);
                         console.log(value.data);
                     });
-                    await insertPetition(iterator[0], iterator[1], iterator[2]).then(value => {
-                        console.log(value.data);
-                    });
-                    await insertPetitionCount().then(value => {
-                        console.log(value.data);
-                    });
-                }, Math.floor(Math.random() * 1000));
+                    await insertPetitionCount();
+                }, Math.floor(getRandomArbitrary(5, 120) * 1000));
             }
 
             return res.sendStatus(200);
         });
+}
+
+function getRandomArbitrary(min: number, max: number) {
+    return Math.random() * (max - min) + min;
 }
