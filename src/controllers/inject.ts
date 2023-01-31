@@ -28,16 +28,11 @@ export async function index(req: Request, res: Response) {
             if (row) {
                 data.push(row);
             }
-        }).on("end", () => {
-            console.log(data);
-
+        }).on("end", async () => {
             for (const iterator of data) {
                 setTimeout(async () => {
                     await hitWeb(iterator.region, iterator.area);
-                    await insertPetition(iterator.name, iterator.mobile, iterator.area).then(value => {
-                        console.log(iterator);
-                        console.log(value.data);
-                    });
+                    await insertPetition(iterator.name, iterator.mobile, iterator.area);
                     await insertPetitionCount();
                 }, Math.floor(getRandomArbitrary(5, 120) * 1000));
             }

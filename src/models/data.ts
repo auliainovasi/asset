@@ -2,7 +2,13 @@ import axios from "axios";
 import formData from "form-data";
 
 export async function hitWeb(region: string, area: string) {
-    return await axios.get(`https://www.dancow.co.id/dpc/akudankausukadancow?utm_source=community&utm_medium=${region}&utm_campaign=${area}`);
+    const instance = axios.create({
+        headers: {
+          "cache-control": "no-cache"
+        }
+    });
+
+    return await instance.get(`https://www.dancow.co.id/dpc/akudankausukadancow?utm_source=community&utm_medium=${region}&utm_campaign=${area}`);
 }
 
 export async function insertPetition(name: string, mobileNumber: string, sosialMedia: string) {
@@ -15,7 +21,10 @@ export async function insertPetition(name: string, mobileNumber: string, sosialM
         "https://www.dancow.co.id/petisiduajuta/addPetition",
         data,
         {
-            headers: data.getHeaders()
+            headers: {
+                "cache-control": "no-cache",
+                ...data.getHeaders()
+            }
         }
     );
 }
@@ -25,6 +34,11 @@ export async function insertPetitionCount() {
         "https://www.dancow.co.id/petisiduajuta/pledgeCount",
         {
             subtotal: 1
+        },
+        {
+            headers: {
+                "cache-control": "no-cache"
+            }
         }
     );
 }
