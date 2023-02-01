@@ -28,7 +28,10 @@ export async function index(req: Request, res: Response) {
                 const chromeOptions = {
                     "args": [
                         "--test-type",
-                        "--incognito"
+                        "--incognito",
+                        "--no-sandbox",
+                        "--disable-setuid-sandbox",
+                        "--disable-dev-shm-usage"
                     ]
                 };
 
