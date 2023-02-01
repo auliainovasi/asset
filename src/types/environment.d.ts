@@ -3,6 +3,7 @@ declare global {
         interface ProcessEnv {
             NODE_ENV: string;
             PORT: string;
+            WEB_HOST: string;
         }
     }
 }
