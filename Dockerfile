@@ -13,7 +13,7 @@ RUN apt update && \
     apt install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends &&\
     rm -rf /var/lib/apt/lists/* && \
     chmod 777 * && \
-    yarn install --prod && \
+    yarn && \
     yarn build
 
 CMD ["google-chrome-stable"]
