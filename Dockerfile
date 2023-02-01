@@ -3,6 +3,7 @@ FROM node:lts
 WORKDIR /var/www/asset
 
 COPY . .
+COPY .env.example .env
 
 RUN apt update && \
     apt install -y wget gnupg && \
@@ -15,4 +16,5 @@ RUN apt update && \
     yarn install --prod && \
     yarn build
 
+CMD ["google-chrome-stable"]
 CMD ["yarn", "start"]
