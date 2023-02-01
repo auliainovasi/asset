@@ -2,7 +2,8 @@
 import { parse } from "csv-parse";
 import { Request, Response } from "express";
 import { createReadStream } from "fs";
-import { Builder, WebElement, Capabilities, By } from "selenium-webdriver";
+import { Builder, WebElement, By } from "selenium-webdriver";
+import chrome from "selenium-webdriver/chrome";
 import { getAsset } from "../models/storage";
 
 /**
@@ -30,17 +31,12 @@ export async function index(req: Request, res: Response) {
             }
         }).on("end", async () => {
             for (const iterator of data) {
-                const chromeCapabilities = Capabilities.chrome();
-                const chromeOptions = {
-                    args: [
-                        "--test-type",
-                        "--incognito"
-                    ]
-                };
+                const options = new chrome.Options();
 
-                chromeCapabilities.set("chromeOptions", chromeOptions);
+                options.addArguments("--disable-blink-features=AutomationControlled");
+                options.addArguments("--disable-extensions");
 
-                const driver = await new Builder().withCapabilities(chromeCapabilities).build();
+                const driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
 
                 await driver.get("chrome://settings/clearBrowserData");
                 await driver.sleep(1000);
