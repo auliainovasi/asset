@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { parse } from "csv-parse";
 import { Request, Response } from "express";
 import { createReadStream } from "fs";
-import { Builder, WebElement, Capabilities } from "selenium-webdriver";
+import { Builder, WebElement, Capabilities, By } from "selenium-webdriver";
 import { getAsset } from "../models/storage";
 
 /**
@@ -11,6 +12,7 @@ import { getAsset } from "../models/storage";
 export async function index(req: Request, res: Response) {
     const status = 400;
     const file = req.file;
+    const data: any[] = [];
 
     if (!file) {
         return res.status(status).json({
@@ -24,6 +26,10 @@ export async function index(req: Request, res: Response) {
         .pipe(parse({ columns: true }))
         .on("data", async (row) => {
             if (row) {
+                data.push(row);
+            }
+        }).on("end", async () => {
+            for (const iterator of data) {
                 const chromeCapabilities = Capabilities.chrome();
                 const chromeOptions = {
                     args: [
@@ -37,19 +43,32 @@ export async function index(req: Request, res: Response) {
                 const driver = await new Builder().withCapabilities(chromeCapabilities).build();
 
                 await driver.get("chrome://settings/clearBrowserData");
-                await driver.sleep(3000);
+                await driver.sleep(1000);
 
                 const clearButton: WebElement = await driver.executeScript("return document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\")");
 
                 await clearButton.click();
+                await driver.sleep(5000);
+                await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${iterator.regon}&utm_campaign=${iterator.area}`);
                 await driver.sleep(10000);
-                // await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${row.region}&utm_campaign=${row.area}`);
-                // await driver.findElement(By.name("q")).sendKeys("webdriver", Key.RETURN);
-                // await driver.wait(until.titleIs("webdriver - Google Search"), 1000);
 
-                driver.quit();
+                const aggrementButton = await driver.findElement(By.id("_evidon-banner-acceptbutton"));
+                const formModal = await driver.findElement(By.id("pledge-button"));
+
+                await aggrementButton.click();
+                await formModal.click();
+                await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${iterator.name}")`);
+                await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${iterator.mobile}")`);
+                await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "@${iterator.name.split(" ")[0]}")`);
+                await driver.executeScript("document.querySelector(\"#agree1\").checked = true");
+                await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
+                await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
+                await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
+
+                await driver.sleep(10000);
+                // driver.quit();
             }
-        }).on("end", async () => {
+
             return res.sendStatus(200);
         });
 }
