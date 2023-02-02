@@ -33,10 +33,11 @@ export async function index(req: Request, res: Response) {
         }).on("end", async () => {
             output.push(["Telepon", "Nama", "Region", "Area", "Status"].join(","));
 
-            for (const iterator of data) {
+            for (const iterator of data) {                
                 const options = new Options();
                 let status = "Berhasil";
 
+                console.log(iterator);
                 options.addArguments("--disable-blink-features=AutomationControlled");
                 options.addArguments("--disable-extensions");
 
