@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { parse } from "csv-parse";
 import { Request, Response } from "express";
-import { createReadStream } from "fs";
+import { createReadStream, writeFileSync } from "fs";
 import { Builder, WebElement, By } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 import { getAsset } from "../models/storage";
@@ -31,6 +31,8 @@ export async function index(req: Request, res: Response) {
             }
         }).on("end", async () => {
             for (const iterator of data) {
+                console.log(iterator);
+
                 const options = new Options();
 
                 options.addArguments("--disable-blink-features=AutomationControlled");
@@ -39,7 +41,7 @@ export async function index(req: Request, res: Response) {
                 const driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
 
                 await driver.get("chrome://settings/clearBrowserData");
-                await driver.sleep(1000);
+                await driver.sleep(3000);
 
                 const clearButton: WebElement = await driver.executeScript("return document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\")");
 
@@ -60,9 +62,11 @@ export async function index(req: Request, res: Response) {
                 await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                 await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
                 await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
-
+                await driver.executeScript("document.querySelector(\"#instagram\").scrollIntoView()");
+                await driver.sleep(3000);
+                writeFileSync(getAsset(`${new Date().getTime()}.png`), await driver.takeScreenshot(), "base64");
                 await driver.sleep(10000);
-                // driver.quit();
+                driver.quit();
             }
 
             return res.sendStatus(200);

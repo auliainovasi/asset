@@ -30,17 +30,16 @@ export async function index(req: Request, res: Response) {
             }
         }).on("end", async () => {
             for (const iterator of data) {
-                setTimeout(async () => {
-                    await hitWeb(iterator.regon, iterator.area);
-                    await insertPetition(iterator.name, iterator.mobile, iterator.area);
-                    await insertPetitionCount();
-                }, Math.floor(getRandomArbitrary(5, 120) * 1000));
+                console.log(iterator);
+                await hitWeb(iterator.regon, iterator.area);
+                await insertPetition(iterator.name, iterator.mobile, iterator.area).then(value => console.log(value.data));
+                await insertPetitionCount();
             }
 
             return res.sendStatus(200);
         });
 }
 
-function getRandomArbitrary(min: number, max: number) {
-    return Math.random() * (max - min) + min;
-}
+// function getRandomArbitrary(min: number, max: number) {
+//     return Math.random() * (max - min) + min;
+// }
