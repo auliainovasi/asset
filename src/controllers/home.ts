@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { parse } from "csv-parse";
 import { Request, Response } from "express";
-import { createReadStream, writeFileSync } from "fs";
+import { createReadStream } from "fs";
 import { Builder, WebElement, By } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 import { getAsset } from "../models/storage";
@@ -14,6 +14,7 @@ export async function index(req: Request, res: Response) {
     const status = 400;
     const file = req.file;
     const data: any[] = [];
+    const output: any[] = [];
 
     if (!file) {
         return res.status(status).json({
@@ -30,10 +31,11 @@ export async function index(req: Request, res: Response) {
                 data.push(row);
             }
         }).on("end", async () => {
-            for (const iterator of data) {
-                console.log(iterator);
+            output.push(["Telepon", "Nama", "Region", "Area", "Status"].join(","));
 
+            for (const iterator of data) {
                 const options = new Options();
+                let status = "Berhasil";
 
                 options.addArguments("--disable-blink-features=AutomationControlled");
                 options.addArguments("--disable-extensions");
@@ -63,16 +65,19 @@ export async function index(req: Request, res: Response) {
                     await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                     await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
                     await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
-                    // await driver.executeScript("document.querySelector(\"#instagram\").scrollIntoView()");
-                    // await driver.sleep(3000);
-                    // writeFileSync(getAsset(`${new Date().getTime()}.png`), await driver.takeScreenshot(), "base64");
                     await driver.sleep(10000);
                     driver.quit();
                 } catch (error) {
                     driver.quit();
+
+                    status = "Gagal";
                 }
+
+                output.push([iterator.mobile, iterator.name, iterator.regon, iterator.area, status].join(","));
             }
 
-            return res.sendStatus(200);
+            res.setHeader("Content-disposition", `attachment; filename=${new Date().getTime()}.csv`);
+            res.set("Content-Type", "text/csv");
+            res.send(output);
         });
 }
