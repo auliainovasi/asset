@@ -7,7 +7,7 @@ import { hitWeb, insertPetition, insertPetitionCount } from "../models/data";
 
 /**
  * Inject API example.
- * @route POST /inject
+ * @route POST /api
  */
 export async function index(req: Request, res: Response) {
     const status = 400;
@@ -31,7 +31,7 @@ export async function index(req: Request, res: Response) {
         }).on("end", async () => {
             for (const iterator of data) {
                 setTimeout(async () => {
-                    await hitWeb(iterator.region, iterator.area);
+                    await hitWeb(iterator.regon, iterator.area);
                     await insertPetition(iterator.name, iterator.mobile, iterator.area);
                     await insertPetitionCount();
                 }, Math.floor(getRandomArbitrary(5, 120) * 1000));

@@ -8,7 +8,7 @@ export async function hitWeb(region: string, area: string) {
         }
     });
 
-    return await instance.get(`https://www.dancow.co.id/dpc/akudankausukadancow?utm_source=community&utm_medium=${region}&utm_campaign=${area}`);
+    return await instance.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${region}&utm_campaign=${area}`);
 }
 
 export async function insertPetition(name: string, mobileNumber: string, sosialMedia: string) {

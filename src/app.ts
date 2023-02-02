@@ -3,7 +3,6 @@ import compression from "compression";  // compresses requests
 import bodyParser from "body-parser";
 import lusca from "lusca";
 import multer from "multer";
-import cors from "cors";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
@@ -20,15 +19,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
-app.use(cors({
-    origin: "*"
-}));
 app.disable("x-powered-by");
 
 /**
  * API examples routes.
  */
-app.get("/:id", homeController.getId);
 app.post("/", multer({dest: storage.getAsset()}).single("file"), homeController.index);
 app.post("/inject", multer({dest: storage.getAsset()}).single("file"), injectController.index);
 
