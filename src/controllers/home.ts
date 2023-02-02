@@ -3,7 +3,7 @@ import { parse } from "csv-parse";
 import { Request, Response } from "express";
 import { createReadStream } from "fs";
 import { Builder, WebElement, By } from "selenium-webdriver";
-import chrome from "selenium-webdriver/chrome";
+import { Options } from "selenium-webdriver/chrome";
 import { getAsset } from "../models/storage";
 
 /**
@@ -31,7 +31,7 @@ export async function index(req: Request, res: Response) {
             }
         }).on("end", async () => {
             for (const iterator of data) {
-                const options = new chrome.Options();
+                const options = new Options();
 
                 options.addArguments("--disable-blink-features=AutomationControlled");
                 options.addArguments("--disable-extensions");
@@ -55,7 +55,7 @@ export async function index(req: Request, res: Response) {
                 await formModal.click();
                 await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${iterator.name}")`);
                 await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${iterator.mobile}")`);
-                await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "@${iterator.name.split(" ")[0]}")`);
+                await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${iterator.name.split(" ")[0]}")`);
                 await driver.executeScript("document.querySelector(\"#agree1\").checked = true");
                 await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                 await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
