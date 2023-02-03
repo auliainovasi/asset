@@ -33,11 +33,13 @@ export async function index(req: Request, res: Response) {
         }).on("end", async () => {
             output.push(["Telepon", "Nama", "Region", "Area", "Status"].join(","));
 
-            for (const iterator of data) {                
+            for (let index = 0; index < data.length; index++) {
+                const element = data[index];             
                 const options = new Options();
                 let status = "Berhasil";
 
-                console.log(iterator);
+                console.log(index + 1);
+                console.log(element);
                 options.addArguments("--disable-blink-features=AutomationControlled");
                 options.addArguments("--disable-extensions");
 
@@ -51,7 +53,7 @@ export async function index(req: Request, res: Response) {
 
                     await clearButton.click();
                     await driver.sleep(5000);
-                    await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${iterator.regon}&utm_campaign=${iterator.area}`);
+                    await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${element.regon}&utm_campaign=${element.area}`);
                     await driver.sleep(10000);
 
                     const aggrementButton = await driver.findElement(By.id("_evidon-banner-acceptbutton"));
@@ -59,9 +61,9 @@ export async function index(req: Request, res: Response) {
 
                     await aggrementButton.click();
                     await formModal.click();
-                    await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${iterator.name}")`);
-                    await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${iterator.mobile}")`);
-                    await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${iterator.name.split(" ")[0]}")`);
+                    await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${element.name}")`);
+                    await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${element.mobile}")`);
+                    await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${element.name.split(" ")[0]}")`);
                     await driver.executeScript("document.querySelector(\"#agree1\").checked = true");
                     await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                     await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
@@ -74,11 +76,11 @@ export async function index(req: Request, res: Response) {
                     status = "Gagal";
                 }
 
-                output.push([iterator.mobile, iterator.name, iterator.regon, iterator.area, status].join(","));
+                output.push([element.mobile, element.name, element.regon, element.area, status].join(","));
             }
 
             res.setHeader("Content-disposition", `attachment; filename=${new Date().getTime()}.csv`);
             res.set("Content-Type", "text/csv");
-            res.send(output);
+            res.send(output.join("\n"));
         });
 }
