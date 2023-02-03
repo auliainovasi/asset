@@ -47,7 +47,7 @@ export async function index(req: Request, res: Response) {
 
                 try {
                     await driver.get("chrome://settings/clearBrowserData");
-                    await driver.sleep(3000);
+                    await driver.sleep(2000);
 
                     const clearButton: WebElement = await driver.executeScript("return document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\")");
 
@@ -68,7 +68,7 @@ export async function index(req: Request, res: Response) {
                     await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                     await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
                     await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
-                    await driver.sleep(10000);
+                    await driver.sleep(8000);
                     driver.quit();
                 } catch (error) {
                     driver.quit();
