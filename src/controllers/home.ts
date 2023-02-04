@@ -38,8 +38,6 @@ export async function index(req: Request, res: Response) {
                 const options = new Options();
                 let status = "Berhasil";
 
-                console.log(index + 1);
-                console.log(element);
                 options.addArguments("--disable-blink-features=AutomationControlled");
                 options.addArguments("--disable-extensions");
 
@@ -52,9 +50,9 @@ export async function index(req: Request, res: Response) {
                     const clearButton: WebElement = await driver.executeScript("return document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\")");
 
                     await clearButton.click();
-                    await driver.sleep(5000);
+                    await driver.sleep(3000);
                     await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${element.regon}&utm_campaign=${element.area}`);
-                    await driver.sleep(10000);
+                    await driver.sleep(5000);
 
                     const aggrementButton = await driver.findElement(By.id("_evidon-banner-acceptbutton"));
                     const formModal = await driver.findElement(By.id("pledge-button"));
@@ -68,7 +66,7 @@ export async function index(req: Request, res: Response) {
                     await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                     await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
                     await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
-                    await driver.sleep(8000);
+                    await driver.sleep(5000);
                     driver.quit();
                 } catch (error) {
                     driver.quit();
@@ -77,6 +75,8 @@ export async function index(req: Request, res: Response) {
                 }
 
                 output.push([element.mobile, element.name, element.regon, element.area, status].join(","));
+                console.log(index + 1);
+                console.log(output);
             }
 
             res.setHeader("Content-disposition", `attachment; filename=${new Date().getTime()}.csv`);
