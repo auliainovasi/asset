@@ -31,7 +31,7 @@ export async function index(req: Request, res: Response) {
                 data.push(row);
             }
         }).on("end", async () => {
-            output.push(["Telepon", "Nama", "Region", "Area", "Status"].join(","));
+            output.push(["No", "Telepon", "Nama", "Region", "Area", "Status"].join(","));
 
             for (let index = 0; index < data.length; index++) {
                 const element = data[index];             
@@ -74,9 +74,9 @@ export async function index(req: Request, res: Response) {
                     status = "Gagal";
                 }
 
-                output.push([element.mobile, element.name, element.regon, element.area, status].join(","));
-                console.log(index + 1);
-                console.log(output);
+                output.push([index + 1, element.mobile, element.name, element.regon, element.area, status].join(","));
+                console.clear();
+                console.log(output.join("\n"));
             }
 
             res.setHeader("Content-disposition", `attachment; filename=${new Date().getTime()}.csv`);
