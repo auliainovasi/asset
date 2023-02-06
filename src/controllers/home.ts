@@ -87,7 +87,7 @@ export async function index(req: Request, res: Response) {
                         dirname += `/${status.toLowerCase()}`;
 
                         checkDirectory(dirname);
-                        writeFileSync(getAsset(`${dirname}.csv`), rowData);
+                        writeFileSync(getAsset(`${dirname}/${iterator.mobile}.csv`), rowData);
                         output.push(rowData);
                         console.clear();
                         console.log(output.join("\n"));
