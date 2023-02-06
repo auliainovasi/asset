@@ -75,7 +75,6 @@ export async function index(req: Request, res: Response) {
                             await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
                             await driver.sleep(5000);
                         } catch (error) {
-                            console.error(error);
                             driver.quit();
 
                             status = "Gagal";
