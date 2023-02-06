@@ -1,11 +1,15 @@
-FROM selenium/node-chrome
+FROM node:lts
 
 WORKDIR /var/www/asset
 
 COPY . .
 COPY .env.example .env
 
-RUN chmod 777 * && \
+RUN apk update && apk upgrade && \
+    apk add --no-cache && \
+    chromium \
+    chromium-chromedriver && \
+    chmod 777 * && \
     yarn && \
     yarn build
 
