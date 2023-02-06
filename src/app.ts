@@ -6,7 +6,6 @@ import multer from "multer";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
-import * as injectController from "./controllers/inject";
 import * as storage from "./models/storage";
 
 // Create Express server
@@ -25,6 +24,5 @@ app.disable("x-powered-by");
  * API examples routes.
  */
 app.post("/", multer({dest: storage.getAsset()}).single("file"), homeController.index);
-app.post("/inject", multer({dest: storage.getAsset()}).single("file"), injectController.index);
 
 export default app;
