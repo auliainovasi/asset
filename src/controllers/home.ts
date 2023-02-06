@@ -2,7 +2,7 @@
 import { parse } from "csv-parse";
 import { Request, Response } from "express";
 import { createReadStream } from "fs";
-import { Builder, WebElement, By } from "selenium-webdriver";
+import { Builder } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 import { getAsset } from "../models/storage";
 
@@ -38,28 +38,16 @@ export async function index(req: Request, res: Response) {
                 const options = new Options();
                 let status = "Berhasil";
 
-                options.addArguments("--disable-blink-features=AutomationControlled");
-                options.addArguments("--disable-extensions");
+                options.addArguments("--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled", "--disable-extensions");
+                options.setUserPreferences({ "profile.default_content_settings.cookies": 2 });
 
                 const driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
 
                 try {
-                    await driver.manage().window().minimize();
-                    await driver.get("chrome://settings/clearBrowserData");
-                    await driver.sleep(2000);
-
-                    const clearButton: WebElement = await driver.executeScript("return document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\")");
-
-                    await clearButton.click();
-                    await driver.sleep(3000);
                     await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${element.regon}&utm_campaign=${element.area}`);
-                    await driver.sleep(5000);
-
-                    const aggrementButton = await driver.findElement(By.id("_evidon-banner-acceptbutton"));
-                    const formModal = await driver.findElement(By.id("pledge-button"));
-
-                    await aggrementButton.click();
-                    await formModal.click();
+                    await driver.sleep(10000);
+                    await driver.executeScript("document.querySelector(\"#_evidon-banner-acceptbutton\").click()");
+                    await driver.executeScript("document.querySelector(\"#pledge-button\").click()");
                     await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${element.name}")`);
                     await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${element.mobile}")`);
                     await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${element.name.split(" ")[0]}")`);
