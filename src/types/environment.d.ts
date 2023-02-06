@@ -4,6 +4,7 @@ declare global {
             NODE_ENV: string;
             PORT: string;
             WEB_HOST: string;
+            REMOTE_CHROME_HOST: string;
         }
     }
 }

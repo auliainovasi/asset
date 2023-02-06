@@ -55,7 +55,11 @@ export async function index(req: Request, res: Response) {
                         options.addArguments("--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled", "--disable-extensions");
                         options.setUserPreferences({ "profile.default_content_settings.cookies": 2 });
 
-                        const driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
+                        let driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
+
+                        if (process.env.REMOTE_CHROME_HOST) {
+                            driver = await new Builder().usingServer(`${process.env.REMOTE_CHROME_HOST}/wd/hub`).withCapabilities({"browserName": "chrome"}).setChromeOptions(options).build();
+                        }
 
                         try {
                             await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${iterator.regon}&utm_campaign=${iterator.area}`);
