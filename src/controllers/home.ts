@@ -43,6 +43,7 @@ export async function index(req: Request, res: Response) {
                 result.push(data.slice(i, i + chunkSize));
             }
 
+            res.sendStatus(200);
             output.push(["No", "Telepon", "Nama", "Region", "Area", "Status"].join(","));
 
             const asyncLoop = async (array: any[][]) => {
@@ -94,13 +95,7 @@ export async function index(req: Request, res: Response) {
             };
 
             asyncLoop(result).then(() => {
-                const filename = `${new Date().getTime()}.csv`;
-                const result = output.join("\n");
-
-                writeFileSync(getAsset(`${moment().format("DD-MM-YYYY")}/${filename}`), result);
-                res.setHeader("Content-disposition", `attachment; filename=${filename}`);
-                res.set("Content-Type", "text/csv");
-                res.send(result);
+                writeFileSync(getAsset(`${moment().format("DD-MM-YYYY")}/${new Date().getTime()}.csv`), output.join("\n"));
             });
         });
 }
