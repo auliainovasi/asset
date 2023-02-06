@@ -80,7 +80,7 @@ export async function index(req: Request, res: Response) {
                         }
 
                         const rowData = [iterator.mobile, iterator.name, iterator.regon, iterator.area, status].join(",");
-                        let dirname = moment().format("DD-MM-YYYY");
+                        let dirname = moment().format("YYYY-MM-DD");
 
                         checkDirectory(dirname);
 
@@ -96,7 +96,7 @@ export async function index(req: Request, res: Response) {
             };
 
             asyncLoop(result).then(() => {
-                writeFileSync(getAsset(`${moment().format("DD-MM-YYYY")}/${new Date().getTime()}.csv`), output.join("\n"));
+                writeFileSync(getAsset(`${moment().format("YYYY-MM-DD")}/${new Date().getTime()}.csv`), output.join("\n"));
             });
         });
 }
