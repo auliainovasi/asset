@@ -44,8 +44,9 @@ export async function index(req: Request, res: Response) {
                 const driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
 
                 try {
+                    await driver.manage().window().minimize();
                     await driver.get("chrome://settings/clearBrowserData");
-                    await driver.sleep(1500);
+                    await driver.sleep(2000);
 
                     const clearButton: WebElement = await driver.executeScript("return document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\")");
 
