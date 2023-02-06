@@ -44,12 +44,11 @@ export async function index(req: Request, res: Response) {
             }
 
             res.sendStatus(200);
-            output.push(["No", "Telepon", "Nama", "Region", "Area", "Status"].join(","));
+            output.push(["Telepon", "Nama", "Region", "Area", "Status"].join(","));
 
             const asyncLoop = async (array: any[][]) => {
                 return Promise.all(array.map(async (item) => {
-                    for (let index = 0; index < item.length; index++) {
-                        const element = item[index];
+                    for (const iterator of item) {
                         const options = new Options();
                         let status = "Berhasil";
 
@@ -59,26 +58,27 @@ export async function index(req: Request, res: Response) {
                         const driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
 
                         try {
-                            await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${element.regon}&utm_campaign=${element.area}`);
+                            await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${iterator.regon}&utm_campaign=${iterator.area}`);
                             await driver.sleep(10000);
                             await driver.executeScript("document.querySelector(\"#_evidon-banner-acceptbutton\").click()");
                             await driver.executeScript("document.querySelector(\"#pledge-button\").click()");
-                            await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${element.name}")`);
-                            await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${element.mobile}")`);
-                            await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${element.name.split(" ")[0]}")`);
+                            await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${iterator.name}")`);
+                            await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${iterator.mobile}")`);
+                            await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${iterator.name.split(" ")[0]}")`);
                             await driver.executeScript("document.querySelector(\"#agree1\").checked = true");
                             await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                             await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
                             await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
                             await driver.sleep(5000);
-                            driver.quit();
                         } catch (error) {
                             driver.quit();
 
                             status = "Gagal";
+                        } finally {
+                            driver.quit();
                         }
 
-                        const rowData = [index + 1, element.mobile, element.name, element.regon, element.area, status].join(",");
+                        const rowData = [iterator.mobile, iterator.name, iterator.regon, iterator.area, status].join(",");
                         let dirname = moment().format("DD-MM-YYYY");
 
                         checkDirectory(dirname);
