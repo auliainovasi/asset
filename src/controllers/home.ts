@@ -2,7 +2,7 @@
 import { parse } from "csv-parse";
 import { Request, Response } from "express";
 import { createReadStream, existsSync, mkdirSync, writeFileSync } from "fs";
-import { Builder } from "selenium-webdriver";
+import { Builder, WebDriver } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 import { getAsset } from "../models/storage";
 import moment from "moment";
@@ -51,14 +51,15 @@ export async function index(req: Request, res: Response) {
                     for (const iterator of item) {
                         const options = new Options();
                         let status = "Berhasil";
+                        let driver: WebDriver;
 
                         options.addArguments("--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled", "--disable-extensions");
                         options.setUserPreferences({ "profile.default_content_settings.cookies": 2 });
 
-                        let driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
-
                         if (process.env.REMOTE_CHROME_HOST) {
                             driver = await new Builder().usingServer(`${process.env.REMOTE_CHROME_HOST}/wd/hub`).withCapabilities({"browserName": "chrome"}).setChromeOptions(options).build();
+                        } else {
+                            driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
                         }
 
                         try {
