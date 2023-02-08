@@ -53,7 +53,7 @@ export async function index(req: Request, res: Response) {
                         let status = "Berhasil";
                         let driver: WebDriver;
 
-                        options.addArguments("--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled", "--disable-extensions");
+                        options.addArguments("--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled", "--disable-extensions", "--incognito");
                         options.setUserPreferences({ "profile.default_content_settings.cookies": 2 });
 
                         if (process.env.REMOTE_CHROME_HOST) {
