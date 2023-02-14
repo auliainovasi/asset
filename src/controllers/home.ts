@@ -15,7 +15,7 @@ export async function index(req: Request, res: Response) {
     const status = 400;
     const file = req.file;
     const data: any[] | any[][] = [];
-    let chunkSize = req.body.chunk_size;
+    let worker = req.body.worker;
 
     if (!file) {
         return res.status(status).json({
@@ -33,15 +33,17 @@ export async function index(req: Request, res: Response) {
             }
         }).on("end", async () => {
             const output: any[] = [];
-            const result = [];
+            let result = [];
 
-            if (!chunkSize) {
-                chunkSize = data.length;
+            if (!worker) {
+                worker = 1;
             }
 
-            for (let i = 0; i < data.length; i += chunkSize) {
-                result.push(data.slice(i, i + chunkSize));
+            for (let i = 0; i < worker; i++) {
+                result.push(data.splice(-data));
             }
+
+            result = result.reverse();
 
             res.sendStatus(200);
             output.push(["Telepon", "Nama", "Region", "Area", "Status"].join(","));
