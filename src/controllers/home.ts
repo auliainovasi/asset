@@ -76,7 +76,7 @@ export async function index(req: Request, res: Response) {
                             await driver.executeScript("document.querySelector(\"#agree1\").checked = true");
                             await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                             await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
-                            // await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
+                            await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
                             await driver.sleep(5000);
                         } catch (error) {
                             driver.quit();
