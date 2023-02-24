@@ -47,7 +47,7 @@ export async function index(req: Request, res: Response) {
             result = result.reverse();
 
             res.sendStatus(200);
-            output.push(["Telepon", "Nama", "Region", "Area", "Status"].join(","));
+            output.push(["Telepon", "Nama", "Instagram", "Region", "Area", "Status"].join(","));
 
             const asyncLoop = async (array: any[][]) => {
                 return Promise.all(array.map(async (item) => {
@@ -72,7 +72,7 @@ export async function index(req: Request, res: Response) {
                             await driver.executeScript("document.querySelector(\"#pledge-button\").click()");
                             await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${iterator.name}")`);
                             await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${iterator.mobile}")`);
-                            await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${iterator.name.split(" ")[0]}")`);
+                            await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${iterator.ig}")`);
                             await driver.executeScript("document.querySelector(\"#agree1\").checked = true");
                             await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
                             await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
@@ -86,7 +86,7 @@ export async function index(req: Request, res: Response) {
                             driver.quit();
                         }
 
-                        const rowData = [iterator.mobile, iterator.name, iterator.regon, iterator.area, status].join(",");
+                        const rowData = [iterator.mobile, iterator.name, iterator.ig, iterator.regon, iterator.area, status].join(",");
                         let dirname = moment().format("YYYY-MM-DD");
 
                         checkDirectory(dirname);
