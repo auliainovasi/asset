@@ -13,6 +13,8 @@ const app = express();
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
+app.set("web_host", process.env.WEB_HOST);
+app.set("remote_chrome_host", process.env.REMOTE_CHROME_HOST);
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -21,7 +23,7 @@ app.use(lusca.xssProtection(true));
 app.disable("x-powered-by");
 
 /**
- * API examples routes.
+ * API routes.
  */
 app.post("/", multer({dest: storage.getAsset()}).single("file"), homeController.index);
 
