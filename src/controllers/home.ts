@@ -68,7 +68,6 @@ export async function index(req: Request, res: Response) {
                             await driver.get("chrome://settings/clearBrowserData");
                             await driver.sleep(2000);
                             await driver.executeScript("document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\").click()");
-
                             await driver.sleep(10000);
                             await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${iterator.regon}&utm_campaign=${iterator.area}`);
                             await driver.executeScript("document.querySelector(\"#_evidon-banner-acceptbutton\").click()");
