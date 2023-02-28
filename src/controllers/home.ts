@@ -1,11 +1,11 @@
 import moment from "moment";
-import app from "../app";
 import { parse } from "csv-parse";
 import { Request, Response } from "express";
 import { createReadStream, existsSync, mkdirSync, writeFileSync } from "fs";
-import { Builder, WebDriver } from "selenium-webdriver";
+import { Builder, By, WebDriver, WebElement } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 import { getAsset } from "../models/storage";
+import "dotenv/config";
 
 /**
  * Home API.
@@ -56,18 +56,21 @@ export async function index(req: Request, res: Response) {
                         let status = "Berhasil";
                         let driver: WebDriver;
 
-                        options.addArguments("--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled", "--disable-extensions", "--incognito");
-                        options.setUserPreferences({ "profile.default_content_settings.cookies": 2 });
+                        options.addArguments("--disable-blink-features=AutomationControlled", "--disable-extensions");
 
-                        if (app.get("remote_chrome_host")) {
-                            driver = await new Builder().usingServer(`${app.get("remote_chrome_host")}/wd/hub`).withCapabilities({"browserName": "chrome"}).setChromeOptions(options).build();
+                        if (process.env.REMOTE_CHROME_HOST) {
+                            driver = await new Builder().usingServer(`${process.env.REMOTE_CHROME_HOST}/wd/hub`).withCapabilities({"browserName": "chrome"}).setChromeOptions(options).build();
                         } else {
                             driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
                         }
 
                         try {
-                            await driver.get(`${app.get("web_host")}?utm_source=community&utm_medium=${iterator.regon}&utm_campaign=${iterator.area}`);
+                            await driver.get("chrome://settings/clearBrowserData");
+                            await driver.sleep(2000);
+                            await driver.executeScript("document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\").click()");
+
                             await driver.sleep(10000);
+                            await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${iterator.regon}&utm_campaign=${iterator.area}`);
                             await driver.executeScript("document.querySelector(\"#_evidon-banner-acceptbutton\").click()");
                             await driver.executeScript("document.querySelector(\"#pledge-button\").click()");
                             await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${iterator.name}")`);
@@ -117,3 +120,9 @@ function checkDirectory(path: string) {
 
     mkdirSync(path);
 }
+
+async function executeScriptInShadowRoot(driver: WebDriver, cssSelector: string, script: string, ...args: any[]) {
+    const element = await driver.findElement(By.css(cssSelector));
+    const shadowRoot: any = await driver.executeScript("return arguments[0].shadowRoot", element);
+    return await shadowRoot!.executeScript(script, ...args);
+  }

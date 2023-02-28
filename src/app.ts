@@ -13,8 +13,6 @@ const app = express();
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
-app.set("web_host", process.env.WEB_HOST);
-app.set("remote_chrome_host", process.env.REMOTE_CHROME_HOST);
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
