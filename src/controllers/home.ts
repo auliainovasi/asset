@@ -2,8 +2,8 @@ import moment from "moment";
 import { parse } from "csv-parse";
 import { Request, Response } from "express";
 import { createReadStream, existsSync, mkdirSync, writeFileSync } from "fs";
-import { Builder, By, WebDriver, WebElement } from "selenium-webdriver";
-import { Options } from "selenium-webdriver/chrome";
+import { Builder, By, until, WebDriver, WebElement } from "selenium-webdriver";
+import { Options } from "selenium-webdriver/firefox";
 import { getAsset } from "../models/storage";
 import "dotenv/config";
 
@@ -56,31 +56,37 @@ export async function index(req: Request, res: Response) {
                         let status = "Berhasil";
                         let driver: WebDriver;
 
+                        // options.addArguments("--disable-blink-features=AutomationControlled", "--disable-extensions", "--headless");
                         options.addArguments("--disable-blink-features=AutomationControlled", "--disable-extensions");
 
                         if (process.env.REMOTE_CHROME_HOST) {
-                            driver = await new Builder().usingServer(`${process.env.REMOTE_CHROME_HOST}/wd/hub`).withCapabilities({"browserName": "chrome"}).setChromeOptions(options).build();
+                            driver = await new Builder().usingServer(`${process.env.REMOTE_CHROME_HOST}/wd/hub`).withCapabilities({"browserName": "firefox"}).setFirefoxOptions(options).build();
                         } else {
-                            driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
+                            driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
                         }
 
                         try {
-                            await driver.get("chrome://settings/clearBrowserData");
-                            await driver.sleep(2000);
-                            await driver.executeScript("document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"#basicPage > settings-section:nth-child(9) > settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataConfirm\").click()");
-                            await driver.sleep(10000);
+                            await driver.get("about:preferences#privacy");
+
+                            const clearButton = await driver.findElement({ xpath: "//*[@id='deleteOnClose']" });
+
+                            await clearButton.click();
                             await driver.get(`${process.env.WEB_HOST}?utm_source=community&utm_medium=${iterator.regon}&utm_campaign=${iterator.area}`);
+                            await driver.sleep(5000);
                             await driver.executeScript("document.querySelector(\"#_evidon-banner-acceptbutton\").click()");
                             await driver.executeScript("document.querySelector(\"#pledge-button\").click()");
                             await driver.executeScript(`document.querySelector("#nama_bunda").setAttribute("value", "${iterator.name}")`);
                             await driver.executeScript(`document.querySelector("#nomor_tlp").setAttribute("value", "${iterator.mobile}")`);
+                            await driver.executeScript(`document.querySelector("#tanggal_lahiranak1").setAttribute("value", "${iterator.dob}")`);
                             await driver.executeScript(`document.querySelector("#instagram").setAttribute("value", "${iterator.ig}")`);
                             await driver.executeScript("document.querySelector(\"#agree1\").checked = true");
                             await driver.executeScript("document.querySelector(\"#agree2\").checked = true");
+                            await driver.executeScript("document.querySelector(\"#agree3\").checked = true");
                             await driver.executeScript("document.querySelector(\"#certificate-gen\").disabled = false");
                             await driver.executeScript("document.querySelector(\"#certificate-gen\").click()");
                             await driver.sleep(5000);
                         } catch (error) {
+                            console.error(error);
                             driver.quit();
 
                             status = "Gagal";
@@ -119,9 +125,3 @@ function checkDirectory(path: string) {
 
     mkdirSync(path);
 }
-
-async function executeScriptInShadowRoot(driver: WebDriver, cssSelector: string, script: string, ...args: any[]) {
-    const element = await driver.findElement(By.css(cssSelector));
-    const shadowRoot: any = await driver.executeScript("return arguments[0].shadowRoot", element);
-    return await shadowRoot!.executeScript(script, ...args);
-  }
